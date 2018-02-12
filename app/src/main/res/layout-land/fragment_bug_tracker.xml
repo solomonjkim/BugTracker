@@ -58,12 +58,10 @@
 
     <Button
         android:id="@+id/bug_date"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bug_description" />
 
@@ -71,9 +69,8 @@
         android:id="@+id/bug_solved"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="44dp"
         android:text="@string/bug_solved_label"
-        app:layout_constraintStart_toStartOf="@+id/details_textView"
-        app:layout_constraintTop_toBottomOf="@+id/bug_date" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/bug_date"
+        app:layout_constraintStart_toEndOf="@+id/bug_date" />
 </android.support.constraint.ConstraintLayout>
