@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.andrews.cptr252.ksolomon.bugtracker.BugDetailsFragment"
-    tools:showIn="@layout/activity_bug_tracker">
+    tools:showIn="@layout/activity_fragment">
 
     <EditText
         android:id="@+id/bug_title"
