@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class BugTrackerActivity extends SingleFragmentActivity {
+public class BugDetailsActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment(){
