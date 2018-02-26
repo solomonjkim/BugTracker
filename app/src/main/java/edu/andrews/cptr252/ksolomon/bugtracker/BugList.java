@@ -1,6 +1,7 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
 import java.util.ArrayList;
 import android.content.Context;
+import java.util.UUID;
 
 /**
  * Created by solomonjkim on 2/14/18.
@@ -35,5 +36,12 @@ public class BugList {
 
 
     private BugList() {
+    }
+
+    public Bug getBug(UUID id){
+        for (Bug bug : mBugs){
+            if(bug.getID().equals(id))
+                    return bug;
+        }
     }
 }
