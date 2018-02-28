@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import java.util.ArrayList;
+import android.content.Intent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,9 +70,19 @@ public class BugListFragment extends ListFragment {
     }
 
 
-    public void onListItemClick(ListView i, View v, int position, long id){
+    public void onListItemClick(ListView l, View v, int position, long id){
         Bug bug = (Bug)(getListAdapter()).getItem(position);
-        Log.d(TAG, bug.getTitle() + " was clicked");
+
+        Intent i = new Intent(getActivity(), BugDetailsActivity.class);
+
+        i.putExtra(BugDetailsFragment.EXTRA_BUG_ID, bug.getID());
+        startActivity(i);
+}
+
+@Override
+    public void onResume(){
+        super.onResume();
+    ((BugAdapter)getListAdapter()).notifyDataSetChanged();
 }
 
 }

@@ -43,5 +43,6 @@ public class BugList {
             if(bug.getID().equals(id))
                     return bug;
         }
+        return null;
     }
 }

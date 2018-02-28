@@ -10,11 +10,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.UUID;
+
 public class BugDetailsActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment(){
-        return new BugDetailsFragment();
+
+        UUID bugId = (UUID)getIntent().getSerializableExtra(BugDetailsFragment.EXTRA_BUG_ID);
+
+        return BugDetailsFragment.newInstance(bugId);
     }
 
 
