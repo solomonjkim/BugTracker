@@ -22,7 +22,7 @@ public class Bug {
     }
 
     public String getDescription(){return mDescription;}
-    public void setDescription(String description) {mDescription = description;}
+    public void setDescription(String description) {mDescription = description;} //setDescription
     public boolean isSolved() {return mSolved;}
     public void setSolved(boolean solved){mSolved = solved;}
     public Date getDate(){return mDate;}
