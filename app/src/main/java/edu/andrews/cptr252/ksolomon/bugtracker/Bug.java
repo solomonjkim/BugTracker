@@ -16,7 +16,6 @@ public class Bug {
 
 
     public Bug(){
-
         mId = UUID.randomUUID();
         mDate = new Date();
     }
