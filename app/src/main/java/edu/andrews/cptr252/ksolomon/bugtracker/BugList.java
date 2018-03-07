@@ -13,16 +13,13 @@ public class BugList {
     private ArrayList<Bug> mBugs;
     private Context mAppContext;
 
+    public void addBug(Bug bug){
+        mBugs.add(bug);
+    }
     private BugList(Context appContext){
         mAppContext = appContext;
         mBugs = new ArrayList<>();
-        for (int i = 0; i < 100; i++){
-            Bug bug = new Bug();
-            bug.setTitle("Bug #" + i);
-            bug.setSolved(i % 2 == 0);
 
-            mBugs.add(bug);
-        }
     }
 
     public static BugList getInstance(Context c) {

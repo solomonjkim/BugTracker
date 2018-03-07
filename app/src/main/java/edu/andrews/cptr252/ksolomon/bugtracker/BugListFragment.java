@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -59,9 +62,37 @@ public class BugListFragment extends ListFragment {
         // Required empty public constructor
     }
 
+private void addBug(){
+        Bug bug = new Bug();
+        BugList.getInstance(getActivity()).addBug(bug);
+
+        Intent i = new Intent(getActivity(), BugDetailsActivity.class);
+        i.putExtra(BugDetailsFragment.EXTRA_BUG_ID, bug.getID());
+
+        startActivityForResult(i, 0);
+}
+
+@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+
+            inflater.inflate(R.menu.menu_bug_list, menu);
+}
+
+@Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menu_item_add_bug: addBug();  return true;
+
+            default: return super.onOptionsItemSelected(item);
+        }
+}
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
         getActivity().setTitle(R.string.bug_list_label);
         mBugs = BugList.getInstance(getActivity()).getBugs();
 
@@ -77,12 +108,12 @@ public class BugListFragment extends ListFragment {
 
         i.putExtra(BugDetailsFragment.EXTRA_BUG_ID, bug.getID());
         startActivity(i);
-}
+    }
 
-@Override
+    @Override
     public void onResume(){
         super.onResume();
-    ((BugAdapter)getListAdapter()).notifyDataSetChanged();
-}
+        ((BugAdapter)getListAdapter()).notifyDataSetChanged();
+    }
 
 }
