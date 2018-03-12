@@ -1,6 +1,8 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
 import java.util.ArrayList;
 import android.content.Context;
+import android.util.Log;
+
 import java.util.UUID;
 
 /**
@@ -10,15 +12,41 @@ import java.util.UUID;
 public class BugList {
     private static BugList sOurInstance;
 
+    private static final String TAG = "BugList";
+
+    private static final String FILENAME = "bugs.json";
+
+    private BugJSONSerializer mSerializer;
+
     private ArrayList<Bug> mBugs;
     private Context mAppContext;
 
+    public boolean saveBugs() {
+        try{
+            mSerializer.saveBugs(mBugs);
+            Log.d(TAG, "Bugs saved to file");
+            return true;
+        } catch (Exception e){
+            Log.e(TAG, "Error saving bugs: " + e);
+            return false;
+        }
+    }
+
     public void addBug(Bug bug){
         mBugs.add(bug);
+        saveBugs();
     }
     private BugList(Context appContext){
         mAppContext = appContext;
-        mBugs = new ArrayList<>();
+        mSerializer = new BugJSONSerializer(mAppContext, FILENAME);
+
+        try{
+            mBugs = mSerializer.loadBugs();
+        } catch (Exception e){
+
+            mBugs = new ArrayList<>();
+            Log.e(TAG, "Error loading bugs: " + e);
+        }
 
     }
 

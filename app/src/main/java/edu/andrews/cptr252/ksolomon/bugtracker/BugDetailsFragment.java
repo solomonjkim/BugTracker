@@ -34,6 +34,12 @@ public class BugDetailsFragment extends Fragment {
     private Bug mBug;
     private EditText mTitleField;
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        BugList.getInstance(getActivity()).saveBugs();
+    }
+
     public static BugDetailsFragment newInstance(UUID bugId){
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_BUG_ID, bugId);
