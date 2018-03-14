@@ -8,6 +8,7 @@
     <string name="bug_description_hint">Describe the bug</string>
     <string name="bug_list_label">Bugs</string>
     <string name="date_picker_title">Date bug discovered</string>
+    <string name="delete_bug">Delete</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

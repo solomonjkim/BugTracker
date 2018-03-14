@@ -70,4 +70,9 @@ public class BugList {
         }
         return null;
     }
+
+    public void deleteBug(Bug bug){
+        mBugs.remove(bug);
+        saveBugs();
+    }
 }
