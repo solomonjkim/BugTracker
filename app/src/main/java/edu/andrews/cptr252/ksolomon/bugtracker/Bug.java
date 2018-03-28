@@ -10,6 +10,11 @@ import org.json.JSONObject;
 
 public class Bug {
 
+    public Bug(UUID id){
+        mId = id;
+        mDate = new Date();
+    }
+
     private String mDescription;
     private Date mDate;
     private boolean mSolved;
@@ -33,8 +38,7 @@ public class Bug {
     }
 
     public Bug(){
-        mId = UUID.randomUUID();
-        mDate = new Date();
+        this(UUID.randomUUID());
     }
 
     public JSONObject toJSON() throws JSONException{
