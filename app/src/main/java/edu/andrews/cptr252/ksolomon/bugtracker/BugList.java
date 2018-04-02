@@ -1,9 +1,14 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
 import java.util.ArrayList;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
+import android.content.ContentValues;
+import android.database.Cursor;
 import java.util.UUID;
+import edu.andrews.cptr252.ksolomon.bugtracker.database.BugCursorWrapper;
+import edu.andrews.cptr252.ksolomon.bugtracker.database.BugDbSchema.BugTable;
+import edu.andrews.cptr252.ksolomon.bugtracker.database.BugDbHelper;
 
 /**
  * Created by solomonjkim on 2/14/18.
@@ -18,35 +23,24 @@ public class BugList {
 
     private BugJSONSerializer mSerializer;
 
-    private ArrayList<Bug> mBugs;
+    private SQLiteDatabase mDatabase;
     private Context mAppContext;
 
-    public boolean saveBugs() {
-        try{
-            mSerializer.saveBugs(mBugs);
-            Log.d(TAG, "Bugs saved to file");
-            return true;
-        } catch (Exception e){
-            Log.e(TAG, "Error saving bugs: " + e);
-            return false;
-        }
+    public void addBug(Bug bug){
+        ContentValues values = getContentValues(bug);
+        mDatabase.insert(BugTable.NAME, null, values);
     }
 
-    public void addBug(Bug bug){
-        mBugs.add(bug);
-        saveBugs();
+    public void updateBug(Bug bug){
+        String uuidString = bug.getID().toString();
+        ContentValues values = getContentValues(bug);
+
+        mDatabase.update(BugTable.NAME, values, BugTable.Cols.UUID + " =? ", new String[]{uuidString});
     }
     private BugList(Context appContext){
-        mAppContext = appContext;
-        mSerializer = new BugJSONSerializer(mAppContext, FILENAME);
 
-        try{
-            mBugs = mSerializer.loadBugs();
-        } catch (Exception e){
-
-            mBugs = new ArrayList<>();
-            Log.e(TAG, "Error loading bugs: " + e);
-        }
+        mAppContext = appContext.getApplicationContext();
+        mDatabase = new BugDbHelper(mAppContext).getWritableDatabase();
 
     }
 
@@ -57,22 +51,68 @@ public class BugList {
         return sOurInstance;
     }
 
-    public ArrayList<Bug> getBugs() {return mBugs;}
+    public ArrayList<Bug> getBugs() {
+        ArrayList<Bug> bugs = new ArrayList<>();
+        BugCursorWrapper cursor = queryBugs(null, null);
+
+        try{
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){
+                bugs.add(cursor.getBug());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return bugs;
+    }
 
 
     private BugList() {
     }
 
     public Bug getBug(UUID id){
-        for (Bug bug : mBugs){
-            if(bug.getID().equals(id))
-                    return bug;
+        BugCursorWrapper cursor = queryBugs(BugTable.Cols.UUID + " =? ", new String[] { id.toString()});
+
+        try{
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getBug();
+        } finally {
+            cursor.close();
         }
-        return null;
     }
 
     public void deleteBug(Bug bug){
-        mBugs.remove(bug);
-        saveBugs();
+
+        String uuidString = bug.getID().toString();
+        mDatabase.delete(BugTable.NAME, BugTable.Cols.UUID + " =? ", new String[] {uuidString});
+    }
+
+    public static ContentValues getContentValues(Bug bug){
+        ContentValues values = new ContentValues();
+        values.put(BugTable.Cols.UUID, bug.getID().toString());
+        values.put(BugTable.Cols.TITLE, bug.getTitle());
+        values.put(BugTable.Cols.DESCRIPTION, bug.getDescription());
+        values.put(BugTable.Cols.DATE, bug.getDate().getTime());
+        values.put(BugTable.Cols.SOLVED, bug.isSolved() ? 1: 0);
+
+        return values;
+    }
+
+    private BugCursorWrapper queryBugs(String whereClause, String[] whereArgs){
+        Cursor cursor = mDatabase.query(
+                BugTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new BugCursorWrapper(cursor);
     }
 }

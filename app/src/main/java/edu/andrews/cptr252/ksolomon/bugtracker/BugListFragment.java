@@ -19,17 +19,38 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import android.content.Intent;
+
+import static java.util.Collections.addAll;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class BugListFragment extends ListFragment {
 
+    private BugAdapter mAdapter;
+
+    private void updateUI(){
+        BugList bugList = BugList.getInstance(getActivity());
+        ArrayList<Bug> bugs = bugList.getBugs();
+
+        if(mAdapter == null){
+            mAdapter = new BugAdapter(bugs);
+            setListAdapter(mAdapter);
+        } else {
+            mAdapter.setBugs(bugs);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
         View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+        updateUI();
 
         ListView listView = v.findViewById(android.R.id.list);
 
@@ -54,18 +75,18 @@ public class BugListFragment extends ListFragment {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.menu_item_delete_bug:
-                        BugAdapter adapter = (BugAdapter)getListAdapter();
+
                         BugList bugList = BugList.getInstance(getActivity());
 
 
-                        for(int i = adapter.getCount() - 1; i >= 0; i--){
+                        for(int i = mAdapter.getCount() - 1; i >= 0; i--){
                             if(getListView().isItemChecked(i)){
-                                bugList.deleteBug(adapter.getItem(i));
+                                bugList.deleteBug(mAdapter.getItem(i));
                             }
                         }
 
                         mode.finish();
-                        adapter.notifyDataSetChanged();
+                        updateUI();
                         return true;
                     default:
                         return false;
@@ -83,10 +104,14 @@ public class BugListFragment extends ListFragment {
 
     private class BugAdapter extends ArrayAdapter<Bug> {
 
+        public void setBugs(ArrayList<Bug> bugs){
+            clear();
+            addAll(bugs);
+        }
+
         public BugAdapter(ArrayList<Bug> bugs) {
             super(getActivity(), 0, bugs);
         }
-
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
@@ -152,8 +177,8 @@ private void addBug(){
         getActivity().setTitle(R.string.bug_list_label);
         mBugs = BugList.getInstance(getActivity()).getBugs();
 
-        BugAdapter adapter = new BugAdapter(mBugs);
-        setListAdapter(adapter);
+        mAdapter = new BugAdapter(mBugs);
+        setListAdapter(mAdapter);
     }
 
 
@@ -169,7 +194,6 @@ private void addBug(){
     @Override
     public void onResume(){
         super.onResume();
-        ((BugAdapter)getListAdapter()).notifyDataSetChanged();
+        updateUI();
     }
-
 }

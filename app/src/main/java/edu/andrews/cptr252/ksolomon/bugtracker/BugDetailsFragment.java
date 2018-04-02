@@ -37,7 +37,7 @@ public class BugDetailsFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        BugList.getInstance(getActivity()).saveBugs();
+        BugList.getInstance(getActivity()).updateBug(mBug);
     }
 
     public static BugDetailsFragment newInstance(UUID bugId){
