@@ -72,4 +72,8 @@ public class Bug {
     public void setTitle(String title){
         mTitle = title;
     }
+
+    public String getPhotoFilename() {
+        return "IMG_" + getID().toString() + ".jpg";
+    }
 }

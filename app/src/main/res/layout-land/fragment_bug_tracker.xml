@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.andrews.cptr252.ksolomon.bugtracker.BugDetailsFragment"
-    tools:showIn="@layout/activity_fragment">
+    >
 
     <EditText
         android:id="@+id/bug_title"
@@ -73,4 +73,23 @@
         android:text="@string/bug_solved_label"
         app:layout_constraintBaseline_toBaselineOf="@+id/bug_date"
         app:layout_constraintStart_toEndOf="@+id/bug_date" />
+
+    <ImageButton
+        android:id="@+id/bug_imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@android:drawable/ic_menu_camera"
+        app:layout_constraintStart_toEndOf="@+id/bug_solved"
+        app:layout_constraintTop_toTopOf="@+id/bug_solved" />
+
+    <ImageView
+        android:id="@+id/bug_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintStart_toEndOf="@+id/bug_imageButton"
+        app:layout_constraintTop_toTopOf="@+id/bug_imageButton" />
 </android.support.constraint.ConstraintLayout>

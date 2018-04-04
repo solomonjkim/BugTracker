@@ -1,7 +1,9 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
+import java.io.File;
 import java.util.ArrayList;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -114,5 +116,14 @@ public class BugList {
                 null
         );
         return new BugCursorWrapper(cursor);
+    }
+
+    public File getPhotoFile(Bug bug){
+        File externalFilesDir = mAppContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if(externalFilesDir == null) {
+            return null;
+        }
+        return new File(externalFilesDir, bug.getPhotoFilename());
     }
 }
