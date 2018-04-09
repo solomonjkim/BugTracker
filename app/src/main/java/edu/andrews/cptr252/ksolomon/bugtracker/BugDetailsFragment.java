@@ -1,6 +1,7 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -53,6 +54,29 @@ public class BugDetailsFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Bug mBug;
     private EditText mTitleField;
+
+    public interface Callbacks {
+        void onBugUpdated(Bug bug);
+    }
+    private Callbacks mCallbacks;
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        mCallbacks = (Callbacks)context;
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+
+    public void updateBug(){
+        BugList.getInstance(getActivity()).updateBug(mBug);
+        mCallbacks.onBugUpdated(mBug);
+    }
 
     @Override
     public void onPause() {
@@ -135,6 +159,7 @@ public class BugDetailsFragment extends Fragment {
 
                 Log.d(TAG, "Title changed to " + mBug.getTitle());
 
+                updateBug();
             }
 
             @Override
@@ -187,6 +212,7 @@ public class BugDetailsFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mBug.setSolved(isChecked);
                 Log.d(TAG, "Set solved status to " + isChecked);
+                updateBug();
             }
         });
         return v;
@@ -202,6 +228,8 @@ public class BugDetailsFragment extends Fragment {
             Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 
             mBug.setDate(date);
+
+            updateBug();
 
             updateDate();
 

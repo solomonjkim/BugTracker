@@ -1,9 +1,11 @@
 package edu.andrews.cptr252.ksolomon.bugtracker;
 
 
+import android.content.Context;
 import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.app.Activity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,7 +36,25 @@ public class BugListFragment extends ListFragment {
 
     private BugAdapter mAdapter;
 
-    private void updateUI(){
+    public interface Callbacks {
+        void onBugSelected(Bug bug);
+    }
+
+    private Callbacks mCallbacks;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks)context;
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    public void updateUI(){
         BugList bugList = BugList.getInstance(getActivity());
         ArrayList<Bug> bugs = bugList.getBugs();
 
@@ -147,10 +168,7 @@ private void addBug(){
         Bug bug = new Bug();
         BugList.getInstance(getActivity()).addBug(bug);
 
-        Intent i = new Intent(getActivity(), BugDetailsActivity.class);
-        i.putExtra(BugDetailsFragment.EXTRA_BUG_ID, bug.getID());
-
-        startActivityForResult(i, 0);
+        mCallbacks.onBugSelected(bug);
 }
 
 @Override
@@ -184,11 +202,9 @@ private void addBug(){
 
     public void onListItemClick(ListView l, View v, int position, long id){
         Bug bug = (Bug)(getListAdapter()).getItem(position);
+        Log.d(TAG, bug.getTitle() + "was clicked");
 
-        Intent i = new Intent(getActivity(), BugDetailsActivity.class);
-
-        i.putExtra(BugDetailsFragment.EXTRA_BUG_ID, bug.getID());
-        startActivity(i);
+        mCallbacks.onBugSelected(bug);
     }
 
     @Override
@@ -196,4 +212,9 @@ private void addBug(){
         super.onResume();
         updateUI();
     }
+
+    protected int getLayoutResId() {
+        return R.layout.activity_masterdetail;
+    }
+
 }

@@ -16,7 +16,7 @@ import android.support.v4.view.ViewPager;
 import java.util.UUID;
 import java.util.ArrayList;
 
-public class BugDetailsActivity extends FragmentActivity {
+public class BugDetailsActivity extends FragmentActivity implements BugDetailsFragment.Callbacks{
 
     private ViewPager mViewPager;
 
@@ -101,5 +101,9 @@ public class BugDetailsActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onBugUpdated(Bug bug){
+
     }
 }
